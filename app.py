@@ -6,6 +6,13 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
 import os
 
+'''
+    RECURSIVE WEB SCRAPER
+    VERSION 26.05.2024
+'''
+
+
+# Configuration
 OUTPUT = 'output'
 os.makedirs(OUTPUT, exist_ok=True)
 
@@ -13,6 +20,7 @@ class WebScraperGUI(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        # Initialize variables
         self.url_queue = []
         self.visited_urls = set()
         self.is_running = False
@@ -75,11 +83,17 @@ class WebScraperGUI(QMainWindow):
         layout.addLayout(button_layout)
 
     def validate_url(self):
+        '''
+            Validate the input URL
+        '''
         url_text = self.url_input.text()
         valid_url = QUrl(url_text).isValid() and url_text.strip() != ''
         self.execute_button.setEnabled(valid_url)
 
     def find_urls(self, base_url):
+        '''
+            Recursive scrap a website
+        '''
         self.url_queue.append(base_url)
         self.visited_urls.add(base_url)
         self.is_running = True
@@ -120,31 +134,47 @@ class WebScraperGUI(QMainWindow):
         self.status_label.setText('Status: Complete')
 
     def update_url_count(self):
-        self.url_count_label.setText(f'Valid URLs found: {len(self.visited_urls)}')
+        self.url_count_label.setText(f'Valid URLs found: {len(self.visited_urls)}') # Show valid URLs
 
     def update_remaining_count(self):
-        self.remaining_label.setText(f'URLs remaining: {len(self.url_queue)}')
+        self.remaining_label.setText(f'URLs remaining: {len(self.url_queue)}') # Show remaining URLs to check
 
     def execute(self):
+        '''
+            Execute scraping procedure
+        '''
         url = self.url_input.text()
+        # Disable buttons
         self.execute_button.setEnabled(False)
         self.export_button.setEnabled(False)
+        
+        # Start the process
         self.find_urls(url)
+
+        # Enable buttons
         self.execute_button.setEnabled(True)
         self.export_button.setEnabled(True)
 
     def cancel(self):
+        '''
+            Stop the scrapping process
+        '''
         self.is_running = False
         self.cancel_button.setEnabled(False)
         self.status_label.setText('Status: Cancelled')
 
     def export(self):
+        '''
+            Export the valid URLs as .txt file
+        '''
         if self.visited_urls:
+            # Get the first url to extract domain name
             first_url = next(iter(self.visited_urls))
 
             parsed_url = urlparse(first_url)
             domain = parsed_url.netloc
 
+            # Save URLs inside the folder named the same as the domain
             os.makedirs(os.path.join('OUTPUT', domain), exist_ok=True)
             output_dir = os.path.join('OUTPUT', domain, 'urls.txt')
 
