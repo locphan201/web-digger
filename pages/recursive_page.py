@@ -164,12 +164,12 @@ class RecursivePage(QWidget):
                         continue
                     if href.startswith('/'):
                         href = urljoin(current_url, href)
-                    if href not in self.visited_urls:
-                        self.visited_urls.add(href)
-                        self.url_queue.append(href)
-                        self.log_area.append(href)
-                        self.update_url_count()
-                        self.update_progress_bar()
+
+                    self.visited_urls.add(href)
+                    self.url_queue.append(href)
+                    self.log_area.append(href)
+                    self.update_url_count()
+                    self.update_progress_bar()
             except Exception as e:
                 self.log_area.append(f'Error: {e}')
             QApplication.processEvents()
@@ -223,7 +223,7 @@ class RecursivePage(QWidget):
 
             # Save URLs inside the folder named the same as the domain
             os.makedirs(os.path.join('OUTPUT', domain), exist_ok=True)
-            output_dir = os.path.join('OUTPUT', domain, 'urls.txt')
+            output_dir = os.path.join('OUTPUT', domain, 'recursive_urls.txt')
 
             with open(output_dir, 'w', encoding='utf-8') as file:
                 file.writelines(f'{url}\n' for url in sorted(self.visited_urls))
