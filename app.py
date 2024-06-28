@@ -1,5 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget
+from PyQt5.QtGui import QIcon
 from pages.recursive_page import RecursivePage
 from pages.indexing_page import IndexingPage
 from pages.tutorial_page import TutorialPage
@@ -14,6 +15,8 @@ class MainApplication(QMainWindow):
         super().__init__()
 
         self.setWindowTitle('Web Digger - v26.06.2024')
+        icon = QIcon('resources/thumbnail.png')
+        self.setWindowIcon(icon)
         self.setGeometry(100, 100, 800, 600)
 
         # Create the tab widget
